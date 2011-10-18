@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		845C4CA51445DD3C009AA64B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 845C4CA41445DD3C009AA64B /* main.cpp */; };
 		845C4CA71445DD3C009AA64B /* complexiPhi.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 845C4CA61445DD3C009AA64B /* complexiPhi.1 */; };
+		845C4CB61445DD77009AA64B /* tAgent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 845C4CAE1445DD77009AA64B /* tAgent.cpp */; };
+		845C4CB71445DD77009AA64B /* tANN.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 845C4CB01445DD77009AA64B /* tANN.cpp */; };
+		845C4CB81445DD77009AA64B /* tGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 845C4CB21445DD77009AA64B /* tGame.cpp */; };
+		845C4CB91445DD77009AA64B /* tHMM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 845C4CB41445DD77009AA64B /* tHMM.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +32,15 @@
 		845C4CA01445DD3C009AA64B /* complexiPhi */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = complexiPhi; sourceTree = BUILT_PRODUCTS_DIR; };
 		845C4CA41445DD3C009AA64B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		845C4CA61445DD3C009AA64B /* complexiPhi.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = complexiPhi.1; sourceTree = "<group>"; };
+		845C4CAD1445DD77009AA64B /* globalConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = globalConst.h; sourceTree = "<group>"; };
+		845C4CAE1445DD77009AA64B /* tAgent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tAgent.cpp; sourceTree = "<group>"; };
+		845C4CAF1445DD77009AA64B /* tAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tAgent.h; sourceTree = "<group>"; };
+		845C4CB01445DD77009AA64B /* tANN.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tANN.cpp; sourceTree = "<group>"; };
+		845C4CB11445DD77009AA64B /* tANN.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tANN.h; sourceTree = "<group>"; };
+		845C4CB21445DD77009AA64B /* tGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tGame.cpp; sourceTree = "<group>"; };
+		845C4CB31445DD77009AA64B /* tGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tGame.h; sourceTree = "<group>"; };
+		845C4CB41445DD77009AA64B /* tHMM.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tHMM.cpp; sourceTree = "<group>"; };
+		845C4CB51445DD77009AA64B /* tHMM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tHMM.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +74,15 @@
 			isa = PBXGroup;
 			children = (
 				845C4CA41445DD3C009AA64B /* main.cpp */,
+				845C4CAD1445DD77009AA64B /* globalConst.h */,
+				845C4CAE1445DD77009AA64B /* tAgent.cpp */,
+				845C4CAF1445DD77009AA64B /* tAgent.h */,
+				845C4CB01445DD77009AA64B /* tANN.cpp */,
+				845C4CB11445DD77009AA64B /* tANN.h */,
+				845C4CB21445DD77009AA64B /* tGame.cpp */,
+				845C4CB31445DD77009AA64B /* tGame.h */,
+				845C4CB41445DD77009AA64B /* tHMM.cpp */,
+				845C4CB51445DD77009AA64B /* tHMM.h */,
 				845C4CA61445DD3C009AA64B /* complexiPhi.1 */,
 			);
 			path = complexiPhi;
@@ -114,6 +136,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				845C4CA51445DD3C009AA64B /* main.cpp in Sources */,
+				845C4CB61445DD77009AA64B /* tAgent.cpp in Sources */,
+				845C4CB71445DD77009AA64B /* tANN.cpp in Sources */,
+				845C4CB81445DD77009AA64B /* tGame.cpp in Sources */,
+				845C4CB91445DD77009AA64B /* tHMM.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
