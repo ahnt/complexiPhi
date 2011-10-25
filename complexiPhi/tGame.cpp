@@ -19,8 +19,8 @@ tGame::~tGame(){
 }
 
 
-void tGame::executeGame(tAgent* agent,int paddleWidth,FILE *f){
-	int spB,w,d,u;
+void tGame::executeGame(tAgent* agent,FILE *f){
+	int spB,w,d,u,p;
 	int Ox,Ax;
 	int grid[20];
 	int i;
@@ -31,226 +31,186 @@ void tGame::executeGame(tAgent* agent,int paddleWidth,FILE *f){
 	agent->fitness=1.0;
 	agent->convFitness=0.0;
 	for(spB=0;spB<20;spB++){
-		for(w=1;w<5;w++){
-			for(d=-1;d<3;d+=2){
-				Ax=0;
-				Ox=spB;
-				agent->resetBrain();
-				for(u=0;u<20;u++){
-					hit=false;
-					for(i=0;i<20;i++)
-						grid[i]=0;
-					for(i=0;i<w;i++)
-						grid[(Ox+i+20)%20]=1;
-					for(i=0;i<4+w;i++)
-						if(grid[(Ax+i)%20]==1) hit=true;
-					agent->states[0]=grid[Ax];
-					agent->states[1]=grid[(Ax+1)%20];
-					agent->states[2]=grid[(Ax+paddleWidth+2)%20];
-					agent->states[3]=grid[(Ax+paddleWidth+3)%20];
-					agent->states[maxNodes-1]=0;
-					agent->states[maxNodes-2]=0;
-					/*
-					//cout<<"------------------"<<endl;
-					for(i=0;i<6;i++)
-						grid[(i+Ax)%20]+=2;
-					for(i=0;i<20;i++){
-						cout<<(int)grid[i];
-						fprintf(f,"%i	",grid[i]);
-					}
-					fprintf(f,"\n");
-					cout<<" "<<Ax<<" "<<(int)hit<<" "<<(int)agent->states[0]<<(int)agent->states[1]<<(int)agent->states[2]<<(int)agent->states[3]<<endl;
-					// */
-					//cout<<"-"<<endl;
-					//agent->showBrain();
-					agent->updateStates();
-					//agent->showBrain();
-					/*
-#ifdef useANN
-					Ax+=(int)agent->ANN->layers[2].outStates[0];
-					while(Ax>=20) Ax-=20;
-					while(Ax<0) Ax+=20;
-#else
-					 */
-					int action=(agent->states[maxNodes-1])+(agent->states[maxNodes-2]<<1);
-					switch (action) {
-						case 0: case 3: break;
-						case 1:Ax=(Ax+1)%20;break;
-						case 2:Ax=(Ax-1+20)%20;break;
-					}
-//#endif					
-					Ox=(Ox+20+d)%20;
-					if(f!=NULL){
+        for(d=0;d<theExperiment.drops();d++){
+            for(w=0;w<theExperiment.sizes();w++){
+                for(p=0;p<theExperiment.selves();p++){
+					Ax=0;
+					Ox=spB;
+					agent->resetBrain();
+					for(u=0;u<20;u++){
+						hit=false;
 						for(i=0;i<20;i++)
 							grid[i]=0;
-						for(i=0;i<6;i++)
-							grid[(i+Ax)%20]=1;
-						for(i=0;i<20;i++)
-							fprintf(f,"%i,	",grid[i]);
-						fprintf(f,"\n");
+						for(i=0;i<theExperiment.sizeSequences[w].data[u&7];i++)
+							grid[(Ox+i+20)%20]=1;
+						for(i=0;i<4+theExperiment.selfSequences[p].data[u&7];i++)
+							if(grid[(Ax+i)%20]==1) hit=true;
+						agent->states[0]=grid[Ax];
+						agent->states[1]=grid[(Ax+1)%20];
+						agent->states[2]=grid[(Ax+theExperiment.selfSequences[p].data[u&7]+2)%20];
+						agent->states[3]=grid[(Ax+theExperiment.selfSequences[p].data[u&7]+3)%20];
+						agent->states[maxNodes-1]=0;
+						agent->states[maxNodes-2]=0;
+						agent->updateStates();
+						int action=(agent->states[maxNodes-1])+(agent->states[maxNodes-2]<<1);
+						switch (action) {
+							case 0: case 3: break;
+							case 1:Ax=(Ax+1)%20;break;
+							case 2:Ax=(Ax-1+20)%20;break;
+						}
+						Ox=(Ox+20+theExperiment.selfSequences[d].data[u&7])%20;
+						if(f!=NULL){
+							for(i=0;i<20;i++)
+								grid[i]=0;
+							for(i=0;i<4+theExperiment.selfSequences[p].data[u&7];i++)
+								grid[(i+Ax)%20]=1;
+							for(i=0;i<20;i++)
+								fprintf(f,"%i,	",grid[i]);
+							fprintf(f,"\n");
+						}
 					}
+                    if(hit==theExperiment.shouldHit[d][w][p]){
+                        agent->fitness*=1.1;
+                        agent->convFitness+=1.0;
+                        correct++;
+                    }
+                    else {
+                        agent->convFitness-=1.0;
+                        agent->fitness/=1.1;
+                        incorrect++;
+                    }
 				}
-                switch(w){
-                    case 1:
-                    case 3:
-                        if(!hit){
-                            agent->fitness*=1.1;
-                            agent->convFitness+=1.0;
-                            correct++;
-                        }
-                        else {
-                            agent->convFitness-=1.0;
-                            agent->fitness/=1.1;
-                            incorrect++;
-                        }
-                        break;
-                    case 2:
-                    case 4:
-                        if(hit){
-                            agent->fitness*=1.1;
-                            agent->convFitness+=1.0;
-                            correct++;
-                        }
-                        else {
-                            agent->convFitness-=1.0;
-                            agent->fitness/=1.1;
-                            incorrect++;
-                        }
-                        break;
-                }
-				//				if(f!=NULL)
-//					cout<<spB<<" "<<w<<" "<<d<<" "<<agent->fitness<<endl;
 			}
 		}
 	}
 	agent->correct=correct;
 	agent->incorrect=incorrect;
 	//cout<<"C: "<<correct<<" I: "<<incorrect<<endl;
+
 }
 
-vector<vector<int> >  tGame::analyseGame(tAgent* agent,int paddleWidth,FILE *f){
-	int spB,w,d,u;
+vector<vector<int> >  tGame::analyseGame(tAgent* agent,FILE *f){
+    int spB,w,d,u,p;
 	int Ox,Ax;
 	int grid[20];
 	int i;
 	bool hit;
 	int correct,incorrect;
-	int E,I,H,M,T0,T1;
+    int E,I,H,M,T0,T1,FE;
 	vector<vector<int> > retValue;
-	vector<int> dummyE,dummyI,dummyH,dummyM,dummyT0,dummyT1;
-
+	vector<int> dummyE,dummyI,dummyH,dummyM,dummyT0,dummyT1,dummyFullE;
+    
 	retValue.clear();
+
 	correct=0;
 	incorrect=0;
 	agent->fitness=1.0;
 	agent->convFitness=0.0;
 	for(spB=0;spB<20;spB++){
-		for(w=2;w<6;w+=2){
-			for(d=-1;d<3;d+=2){
-				Ax=0;
-				Ox=spB;
-				agent->resetBrain();
-				for(u=0;u<20;u++){
-					hit=false;
-					for(i=0;i<20;i++)
-						grid[i]=0;
-					for(i=0;i<w;i++)
-						grid[(Ox+i+20)%20]=1;
-					for(i=0;i<4+w;i++)
-						if(grid[(Ax+i)%20]==1) hit=true;
-					agent->states[0]=grid[Ax];
-					agent->states[1]=grid[(Ax+1)%20];
-					agent->states[2]=grid[(Ax+paddleWidth+2)%20];
-					agent->states[3]=grid[(Ax+paddleWidth+3)%20];
-					agent->states[maxNodes-1]=0;
-					agent->states[maxNodes-2]=0;
-//					agent->states[maxNodes-3]=0;
-					E=0;
-					I=0;
-					H=0;
-					M=0;
-					if(w==4) E+=8;
-					if(d==1) E+=4;
-					int cm=(Ox+(w/2))-(Ax+4+paddleWidth);
-					if(cm>=0) E+=2;
-					if(hit) E+=1;
-					for(i=0;i<4;i++)
-						I=(I<<1)+agent->states[i];
-					for(i=4;i<14;i++)
-						H=(H<<1)+agent->states[i];
-					for(i=14;i<16;i++)
-						M=(M<<1)+agent->states[i];
-					if(f!=NULL)
-						fprintf(f,"%i	%i	",E,I);
-					dummyE.push_back(E);
-					dummyI.push_back(I);
-					agent->updateStates();
-					H=0;
-					M=0;
-//					for(i=4;i<14;i++)
-					for(i=4;i<16;i++)
-						H=(H<<1)+agent->states[i];
-					for(i=14;i<16;i++)
-						M=(M<<1)+agent->states[i];
-					if(f!=NULL)
-						fprintf(f,"	%i	%i	%i\n",H,M,(E<<14)+(I<<10)+H);
-					dummyH.push_back(H);
-					dummyM.push_back(M);
-					dummyT0.push_back((E<<16)+(I<<12)+H);
-//					dummyT0.push_back((E<<14)+(I<<10)+H);
-					/*
-#ifdef useANN
-					Ax+=(int)agent->ANN->layers[2].outStates[0];
-					while(Ax>=20) Ax-=20;
-					while(Ax<0) Ax+=20;
-#else
-					 */
-					int action=(agent->states[maxNodes-1])+(agent->states[maxNodes-2]<<1);
-					switch (action) {
-						case 0: case 3: break;
-						case 1:Ax=(Ax+1)%20;break;
-						case 2:Ax=(Ax-1+20)%20;break;
+        for(d=0;d<theExperiment.drops();d++){
+            for(w=0;w<theExperiment.sizes();w++){
+                for(p=0;p<theExperiment.selves();p++){
+					Ax=0;
+					Ox=spB;
+					agent->resetBrain();
+					for(u=0;u<20;u++){
+						hit=false;
+						for(i=0;i<20;i++)
+							grid[i]=0;
+						for(i=0;i<theExperiment.sizeSequences[w].data[u&7];i++)
+							grid[(Ox+i+20)%20]=1;
+						for(i=0;i<4+theExperiment.selfSequences[p].data[u&7];i++)
+							if(grid[(Ax+i)%20]==1) hit=true;
+						agent->states[0]=grid[Ax];
+						agent->states[1]=grid[(Ax+1)%20];
+						agent->states[2]=grid[(Ax+theExperiment.selfSequences[p].data[u&7]+2)%20];
+						agent->states[3]=grid[(Ax+theExperiment.selfSequences[p].data[u&7]+3)%20];
+						agent->states[maxNodes-1]=0;
+						agent->states[maxNodes-2]=0;
+                        E=0;
+                        I=0;
+                        H=0;
+                        M=0;
+                        FE=d<<6+w<<3+p;
+                        if(theExperiment.sizeSequences[w].data[u&7]>=theExperiment.selfSequences[p].data[u&7]) E+=8;
+                        if(theExperiment.dropSequences[d].data[u&7]==1) E+=4;
+                        int cm=(Ox+(theExperiment.sizeSequences[w].data[u&7]/2))-(Ax+4+theExperiment.selfSequences[p].data[u&7]);
+                        if(cm>=0) E+=2;
+                        if(hit) E+=1;
+                        if(theExperiment.selfSequences[p].data[u&7]<2) E+=16;
+                        for(i=0;i<4;i++)
+                            I=(I<<1)+agent->states[i];
+                        for(i=4;i<14;i++)
+                            H=(H<<1)+agent->states[i];
+                        for(i=14;i<16;i++)
+                            M=(M<<1)+agent->states[i];
+                        if(f!=NULL)
+                            fprintf(f,"%i	%i	",E,I);
+                        dummyE.push_back(E);
+                        dummyI.push_back(I);
+                        agent->updateStates();
+                        H=0;
+                        M=0;
+                        for(i=4;i<16;i++)
+                            H=(H<<1)+agent->states[i];
+                        for(i=14;i<16;i++)
+                            M=(M<<1)+agent->states[i];
+                        if(f!=NULL)
+                            fprintf(f,"	%i	%i	%i\n",H,M,(FE<<19)+(E<<14)+(I<<10)+H);
+                        dummyH.push_back(H);
+                        dummyM.push_back(M);
+                        dummyT0.push_back((FE<<21)+(E<<16)+(I<<12)+H);
+                        dummyFullE.push_back(FE);
+						int action=(agent->states[maxNodes-1])+(agent->states[maxNodes-2]<<1);
+						switch (action) {
+							case 0: case 3: break;
+							case 1:Ax=(Ax+1)%20;break;
+							case 2:Ax=(Ax-1+20)%20;break;
+						}
+						Ox=(Ox+20+theExperiment.selfSequences[d].data[u&7])%20;
+						if(f!=NULL){
+							for(i=0;i<20;i++)
+								grid[i]=0;
+							for(i=0;i<4+theExperiment.selfSequences[p].data[u&7];i++)
+								grid[(i+Ax)%20]=1;
+							for(i=0;i<20;i++)
+								fprintf(f,"%i,	",grid[i]);
+							fprintf(f,"\n");
+						}
 					}
-//#endif					
-					Ox=(Ox+20+d)%20;
-				}
-				if(w==2){
-					if(hit){
-						correct++;
-					}
-					else {
-						incorrect++;
-					}
-					
-				}
-				else{
-					if(!hit){
-						correct++;
-					}
-					else {
-						incorrect++;
-					}
+                    if(hit==theExperiment.shouldHit[d][w][p]){
+                        agent->fitness*=1.1;
+                        agent->convFitness+=1.0;
+                        correct++;
+                    }
+                    else {
+                        agent->convFitness-=1.0;
+                        agent->fitness/=1.1;
+                        incorrect++;
+                    }
 				}
 			}
 		}
 	}
 	agent->correct=correct;
 	agent->incorrect=incorrect;
-	retValue.push_back(dummyE);
+    retValue.push_back(dummyE);
 	retValue.push_back(dummyI);
 	retValue.push_back(dummyH);
 	retValue.push_back(dummyM);
 	retValue.push_back(dummyT0);
+    retValue.push_back(dummyFullE);
 	return retValue;
 }
 
-void tGame::analyseKO(tAgent* agent,int paddleWidth,FILE *f,int which, int setTo){
+void tGame::analyseKO(tAgent* agent,FILE *f,int which, int setTo){
+    /*
 	int spB,w,d,u;
 	int Ox,Ax;
 	int grid[20];
 	int i;
 	bool hit;
-	int correct,incorrect;
+	int correct,incorrect,paddleWidth;
 	int E,I,H,M,T0,T1;
 	correct=0;
 	incorrect=0;
@@ -304,20 +264,12 @@ void tGame::analyseKO(tAgent* agent,int paddleWidth,FILE *f,int which, int setTo
 						M=(M<<1)+agent->states[i];
 					if(f!=NULL)
 						fprintf(f,"	%i	%i	%i\n",H,M,(E<<14)+(I<<10)+H);
-					/*
-#ifdef useANN
-					Ax+=(int)agent->ANN->layers[2].outStates[0];
-					while(Ax>=20) Ax-=20;
-					while(Ax<0) Ax+=20;
-#else
-					 */
 					int action=(agent->states[maxNodes-1])+(agent->states[maxNodes-2]<<1);
 					switch (action) {
 						case 0: case 3: break;
 						case 1:Ax=(Ax+1)%20;break;
 						case 2:Ax=(Ax-1+20)%20;break;
 					}
-//#endif					
 					Ox=(Ox+20+d)%20;
 				}
 				if(w==2){
@@ -342,6 +294,7 @@ void tGame::analyseKO(tAgent* agent,int paddleWidth,FILE *f,int which, int setTo
 	}
 	agent->correct=correct;
 	agent->incorrect=incorrect;
+     */
 }
 
 double tGame::mutualInformation(vector<int> A,vector<int>B){
@@ -501,6 +454,98 @@ double tGame::predictNextInput(vector<int>A){
 	return mutualInformation(S, I);
 }
 
+void tGame::loadExperiment(char *filename){
+    theExperiment.loadExperiment(filename);
+}
+
+
+//** tOctuplet implementation
+void tOctuplet::loadOctuplet(FILE *f){
+    int i,IN;
+    data.clear();
+    data.resize(8);
+    for(i=0;i<8;i++){
+        fscanf(f,"  %i",&IN);
+        data[i]=IN;
+    }
+}
+
+//** tEperiment class implementations
+void tExperiment::loadExperiment(char *filename){
+    FILE *f=fopen(filename,"r+t");
+    int i,j,k;
+    fscanf(f,"%i:",&j);
+    dropSequences.resize(j);
+    for(i=0;i<dropSequences.size();i++)
+        dropSequences[i].loadOctuplet(f);
+    fscanf(f,"%i:",&j);
+    sizeSequences.resize(j);
+    for(i=0;i<sizeSequences.size();i++)
+        sizeSequences[i].loadOctuplet(f);
+    fscanf(f,"%i:",&j);
+    selfSequences.resize(j);
+    for(i=0;i<selfSequences.size();i++)
+        selfSequences[i].loadOctuplet(f);
+    shouldHit.resize(drops());
+    for(i=0;i<shouldHit.size();i++){
+        shouldHit[i].resize(sizes());
+        for(j=0;j<shouldHit[i].size();j++){
+            shouldHit[i][j].resize(selves());
+            for(k=0;k<shouldHit[i][j].size();k++){
+                int l;
+                fscanf(f,"%i\n",&l);
+                if(l==1)
+                    shouldHit[i][j][k]=true;
+                else
+                    shouldHit[i][j][k]=false;
+            }
+        }
+    }
+    fclose(f);
+}
+
+void tExperiment::showExperimentProtokoll(void){
+    int i,j,k;
+    printf("drop directions: %i\n",drops());
+    for(i=0;i<drops();i++){
+        printf("%i:",i);
+        for(j=0;j<8;j++)
+            printf("    %i",dropSequences[i].data[j]);
+        printf("\n");
+    }
+    printf("drop sizes: %i\n",sizes());
+    for(i=0;i<sizes();i++){
+        printf("%i:",i);
+        for(j=0;j<8;j++)
+            printf("    %i",sizeSequences[i].data[j]);
+        printf("\n");
+    }
+    printf("self sizes: %i\n",selves());
+    for(i=0;i<selves();i++){
+        printf("%i:",i);
+        for(j=0;j<8;j++)
+            printf("    %i",selfSequences[i].data[j]);
+        printf("\n");
+    }
+    printf("should hit\n%i means true\nD  B   S   catch\n",(int)true);
+    for(i=0;i<shouldHit.size();i++)
+        for(j=0;j<shouldHit[i].size();j++)
+            for(k=0;k<shouldHit[i][j].size();k++)
+                printf("%i  %i  %i  %i\n",i,j,k,(int)shouldHit[i][j][k]);
+}
+
+int tExperiment::drops(void){
+    return (int) dropSequences.size();
+}
+
+int tExperiment::sizes(void){
+    return (int) sizeSequences.size();
+}
+
+int tExperiment::selves(void){
+    return (int) selfSequences.size();
+    
+}
 
 
 

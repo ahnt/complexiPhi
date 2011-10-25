@@ -23,11 +23,30 @@ using namespace std;
 #define startMazes 1
 #define cPI 3.14159265
 
+class tOctuplet{
+public:
+    vector<int> data;
+    void loadOctuplet(FILE *f);
+};
+
+class tExperiment{
+public:
+    vector<tOctuplet> dropSequences,sizeSequences,selfSequences;
+    vector<vector<vector<bool> > > shouldHit;
+    void loadExperiment(char *filename);
+    void showExperimentProtokoll(void);
+    int drops(void);
+    int sizes(void);
+    int selves(void);
+};
+
 class tGame{
 public:
-	void executeGame(tAgent* agent,int paddleWidth,FILE *f);
-	vector<vector<int> > analyseGame(tAgent* agent,int paddleWidth,FILE *f);
-	void analyseKO(tAgent* agent,int paddleWidth,FILE *f,int which, int setTo);
+    tExperiment theExperiment;
+    void loadExperiment(char *filename);
+	void executeGame(tAgent* agent,FILE *f);
+	vector<vector<int> > analyseGame(tAgent* agent,FILE *f);
+	void analyseKO(tAgent* agent,FILE *f,int which, int setTo);
 	tGame();
 	~tGame();
 	double mutualInformation(vector<int> A,vector<int>B);

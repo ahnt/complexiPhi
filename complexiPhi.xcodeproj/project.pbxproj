@@ -41,6 +41,7 @@
 		845C4CB31445DD77009AA64B /* tGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tGame.h; sourceTree = "<group>"; };
 		845C4CB41445DD77009AA64B /* tHMM.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tHMM.cpp; sourceTree = "<group>"; };
 		845C4CB51445DD77009AA64B /* tHMM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tHMM.h; sourceTree = "<group>"; };
+		84AD68B61457300A006EBA24 /* basic.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = basic.txt; path = work/basic.txt; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +85,7 @@
 				845C4CB41445DD77009AA64B /* tHMM.cpp */,
 				845C4CB51445DD77009AA64B /* tHMM.h */,
 				845C4CA61445DD3C009AA64B /* complexiPhi.1 */,
+				84AD68B61457300A006EBA24 /* basic.txt */,
 			);
 			path = complexiPhi;
 			sourceTree = "<group>";
@@ -224,6 +226,7 @@
 				845C4CAC1445DD3C009AA64B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -33,7 +33,8 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.GDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.GDB"
       launchStyle = "0"
-      useCustomWorkingDirectory = "NO"
+      useCustomWorkingDirectory = "YES"
+      customWorkingDirectory = "/Volumes/KoMoDo/scienceGit/complexiPhi/work"
       buildConfiguration = "Release">
       <BuildableProductRunnable>
          <BuildableReference
